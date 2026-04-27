@@ -1,0 +1,746 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Open University Classification Calculator</title>
+    <link href="https://fonts.googleapis.com/css2?family=Crimson+Pro:wght@300;400;600;700&family=IBM+Plex+Mono:wght@400;500&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --ou-navy: #002855;
+            --ou-blue: #0066cc;
+            --ou-light-blue: #e6f2ff;
+            --ou-gold: #d4af37;
+            --ou-cream: #faf8f3;
+            --ou-charcoal: #2d2d2d;
+            --ou-grey: #6b7280;
+            --ou-border: #d1d5db;
+            --grade-1: #10b981;
+            --grade-2: #3b82f6;
+            --grade-3: #f59e0b;
+            --grade-4: #ef4444;
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Crimson Pro', serif;
+            background: linear-gradient(135deg, var(--ou-cream) 0%, #ffffff 50%, var(--ou-light-blue) 100%);
+            min-height: 100vh;
+            color: var(--ou-charcoal);
+            padding: 2rem 1rem;
+            line-height: 1.6;
+        }
+
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            animation: fadeIn 0.6s ease-out;
+        }
+
+        @keyframes fadeIn {
+            from {
+                opacity: 0;
+                transform: translateY(20px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        header {
+            text-align: center;
+            margin-bottom: 3rem;
+            position: relative;
+        }
+
+        h1 {
+            font-size: clamp(2rem, 5vw, 3.5rem);
+            font-weight: 700;
+            color: var(--ou-navy);
+            margin-bottom: 0.5rem;
+            letter-spacing: -0.02em;
+        }
+
+        .subtitle {
+            font-size: 1.25rem;
+            color: var(--ou-grey);
+            font-weight: 300;
+            font-style: italic;
+        }
+
+        .info-banner {
+            background: linear-gradient(135deg, var(--ou-navy) 0%, var(--ou-blue) 100%);
+            color: white;
+            padding: 1.5rem;
+            border-radius: 12px;
+            margin-bottom: 2rem;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+            animation: slideDown 0.6s ease-out 0.2s both;
+        }
+
+        @keyframes slideDown {
+            from {
+                opacity: 0;
+                transform: translateY(-20px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        .info-banner p {
+            font-size: 1rem;
+            line-height: 1.8;
+            margin-bottom: 0.5rem;
+        }
+
+        .info-banner strong {
+            color: var(--ou-gold);
+        }
+
+        .main-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 2rem;
+            margin-bottom: 2rem;
+        }
+
+        @media (max-width: 968px) {
+            .main-grid {
+                grid-template-columns: 1fr;
+            }
+        }
+
+        .card {
+            background: white;
+            border-radius: 16px;
+            padding: 2rem;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.08);
+            border: 1px solid var(--ou-border);
+            animation: fadeIn 0.6s ease-out;
+        }
+
+        .card h2 {
+            font-size: 1.75rem;
+            color: var(--ou-navy);
+            margin-bottom: 1.5rem;
+            font-weight: 600;
+            border-bottom: 2px solid var(--ou-gold);
+            padding-bottom: 0.5rem;
+        }
+
+        .level-section {
+            margin-bottom: 2rem;
+        }
+
+        .level-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 1rem;
+            padding: 0.75rem 1rem;
+            background: var(--ou-light-blue);
+            border-radius: 8px;
+        }
+
+        .level-title {
+            font-size: 1.25rem;
+            font-weight: 600;
+            color: var(--ou-navy);
+        }
+
+        .level-credits {
+            font-family: 'IBM Plex Mono', monospace;
+            font-size: 0.9rem;
+            color: var(--ou-blue);
+            font-weight: 500;
+        }
+
+        .module-row {
+            display: grid;
+            grid-template-columns: 2fr 1fr 1fr 40px;
+            gap: 1rem;
+            margin-bottom: 1rem;
+            align-items: center;
+            padding: 1rem;
+            background: var(--ou-cream);
+            border-radius: 8px;
+            transition: all 0.3s ease;
+        }
+
+        .module-row:hover {
+            background: #f0ede5;
+            transform: translateX(4px);
+        }
+
+        .input-group {
+            display: flex;
+            flex-direction: column;
+        }
+
+        .input-group label {
+            font-size: 0.85rem;
+            color: var(--ou-grey);
+            margin-bottom: 0.25rem;
+            font-weight: 500;
+        }
+
+        input[type="number"] {
+            padding: 0.75rem;
+            border: 2px solid var(--ou-border);
+            border-radius: 8px;
+            font-family: 'IBM Plex Mono', monospace;
+            font-size: 1rem;
+            transition: all 0.3s ease;
+            background: white;
+        }
+
+        input[type="number"]:focus {
+            outline: none;
+            border-color: var(--ou-blue);
+            box-shadow: 0 0 0 3px rgba(0, 102, 204, 0.1);
+        }
+
+        select {
+            padding: 0.75rem;
+            border: 2px solid var(--ou-border);
+            border-radius: 8px;
+            font-family: 'Crimson Pro', serif;
+            font-size: 1rem;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            background: white;
+        }
+
+        select:focus {
+            outline: none;
+            border-color: var(--ou-blue);
+            box-shadow: 0 0 0 3px rgba(0, 102, 204, 0.1);
+        }
+
+        .grade-1 { color: var(--grade-1); }
+        .grade-2 { color: var(--grade-2); }
+        .grade-3 { color: var(--grade-3); }
+        .grade-4 { color: var(--grade-4); }
+
+        .remove-btn {
+            background: #ef4444;
+            color: white;
+            border: none;
+            border-radius: 50%;
+            width: 40px;
+            height: 40px;
+            cursor: pointer;
+            font-size: 1.25rem;
+            transition: all 0.3s ease;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .remove-btn:hover {
+            background: #dc2626;
+            transform: scale(1.1);
+        }
+
+        .add-module-btn {
+            background: var(--ou-blue);
+            color: white;
+            border: none;
+            padding: 0.75rem 1.5rem;
+            border-radius: 8px;
+            font-family: 'Crimson Pro', serif;
+            font-size: 1rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            width: 100%;
+            margin-top: 0.5rem;
+        }
+
+        .add-module-btn:hover {
+            background: var(--ou-navy);
+            transform: translateY(-2px);
+            box-shadow: 0 4px 12px rgba(0, 102, 204, 0.3);
+        }
+
+        .results-card {
+            background: linear-gradient(135deg, var(--ou-navy) 0%, var(--ou-blue) 100%);
+            color: white;
+            grid-column: 1 / -1;
+        }
+
+        .results-card h2 {
+            color: white;
+            border-bottom-color: var(--ou-gold);
+        }
+
+        .score-display {
+            text-align: center;
+            padding: 2rem;
+            margin: 1rem 0;
+            background: rgba(255, 255, 255, 0.1);
+            border-radius: 12px;
+            border: 2px solid rgba(255, 255, 255, 0.2);
+        }
+
+        .score-number {
+            font-family: 'IBM Plex Mono', monospace;
+            font-size: 4rem;
+            font-weight: 700;
+            color: var(--ou-gold);
+            line-height: 1;
+            margin-bottom: 0.5rem;
+        }
+
+        .score-label {
+            font-size: 1.25rem;
+            opacity: 0.9;
+            font-weight: 300;
+        }
+
+        .classification-badge {
+            display: inline-block;
+            padding: 1rem 2rem;
+            background: var(--ou-gold);
+            color: var(--ou-navy);
+            font-size: 2rem;
+            font-weight: 700;
+            border-radius: 12px;
+            margin: 1rem 0;
+            box-shadow: 0 4px 12px rgba(212, 175, 55, 0.3);
+        }
+
+        .breakdown {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 1rem;
+            margin-top: 1.5rem;
+        }
+
+        .breakdown-item {
+            background: rgba(255, 255, 255, 0.1);
+            padding: 1rem;
+            border-radius: 8px;
+            text-align: center;
+        }
+
+        .breakdown-value {
+            font-family: 'IBM Plex Mono', monospace;
+            font-size: 2rem;
+            font-weight: 700;
+            color: var(--ou-gold);
+        }
+
+        .breakdown-label {
+            font-size: 0.95rem;
+            opacity: 0.9;
+            margin-top: 0.25rem;
+        }
+
+        .borderline-notice {
+            background: rgba(212, 175, 55, 0.2);
+            border: 2px solid var(--ou-gold);
+            padding: 1.5rem;
+            border-radius: 12px;
+            margin-top: 1.5rem;
+        }
+
+        .borderline-notice h3 {
+            color: var(--ou-gold);
+            margin-bottom: 0.75rem;
+            font-size: 1.5rem;
+        }
+
+        .projection-section {
+            background: rgba(255, 255, 255, 0.1);
+            padding: 1.5rem;
+            border-radius: 12px;
+            margin-top: 1.5rem;
+        }
+
+        .projection-section h3 {
+            font-size: 1.5rem;
+            margin-bottom: 1rem;
+            color: white;
+        }
+
+        .projection-item {
+            background: rgba(255, 255, 255, 0.1);
+            padding: 1rem;
+            border-radius: 8px;
+            margin-bottom: 1rem;
+        }
+
+        .projection-item:last-child {
+            margin-bottom: 0;
+        }
+
+        .projection-target {
+            font-size: 1.25rem;
+            font-weight: 600;
+            color: var(--ou-gold);
+            margin-bottom: 0.5rem;
+        }
+
+        .projection-requirement {
+            font-size: 1rem;
+            opacity: 0.95;
+        }
+
+        .warning-text {
+            color: #fbbf24;
+            font-style: italic;
+        }
+
+        footer {
+            text-align: center;
+            margin-top: 3rem;
+            padding-top: 2rem;
+            border-top: 2px solid var(--ou-border);
+            color: var(--ou-grey);
+            font-size: 0.95rem;
+        }
+
+        footer a {
+            color: var(--ou-blue);
+            text-decoration: none;
+            font-weight: 600;
+        }
+
+        footer a:hover {
+            text-decoration: underline;
+        }
+
+        @media (max-width: 768px) {
+            .module-row {
+                grid-template-columns: 1fr;
+                gap: 0.75rem;
+            }
+            
+            .remove-btn {
+                justify-self: end;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <header>
+            <h1>Open University Classification Calculator</h1>
+            <p class="subtitle">Honours Degree Classification Predictor</p>
+        </header>
+
+        <div class="info-banner">
+            <p><strong>How it works:</strong> Your degree classification is calculated using a weighted grade credit score from 120 credits at Level 2 and 120 credits at Level 3.</p>
+            <p><strong>Level 2</strong> grades are single weighted • <strong>Level 3</strong> grades are double weighted</p>
+            <p>Enter your completed modules and projected grades below to see your current classification and what you need to achieve higher grades.</p>
+        </div>
+
+        <div class="main-grid">
+            <div class="card">
+                <h2>Level 2 Modules</h2>
+                <div class="level-section">
+                    <div class="level-header">
+                        <span class="level-title">Single Weighted</span>
+                        <span class="level-credits" id="l2-credits">0 / 120 credits</span>
+                    </div>
+                    <div id="level2-modules"></div>
+                    <button class="add-module-btn" onclick="addModule('level2')">+ Add Level 2 Module</button>
+                </div>
+            </div>
+
+            <div class="card">
+                <h2>Level 3 Modules</h2>
+                <div class="level-section">
+                    <div class="level-header">
+                        <span class="level-title">Double Weighted</span>
+                        <span class="level-credits" id="l3-credits">0 / 120 credits</span>
+                    </div>
+                    <div id="level3-modules"></div>
+                    <button class="add-module-btn" onclick="addModule('level3')">+ Add Level 3 Module</button>
+                </div>
+            </div>
+
+            <div class="card results-card">
+                <h2>Your Classification</h2>
+                <div id="results-content">
+                    <p style="text-align: center; opacity: 0.8; padding: 2rem;">Add your modules above to calculate your classification</p>
+                </div>
+            </div>
+        </div>
+
+        <footer>
+            <p>This calculator is for illustrative purposes only. Official classifications are awarded by The Open University.</p>
+            <p>For 360-credit bachelor's honours degrees awarded after 1 March 2023.</p>
+            <p style="margin-top: 1rem;">Ronan Duffy 2026 ❤️ for OU Students, you can do this! | <a href="https://github.com/ronan182" target="_blank">GitHub</a></p>
+        </footer>
+    </div>
+
+    <script>
+        let moduleCounter = 0;
+
+        function addModule(level) {
+            const container = document.getElementById(`${level}-modules`);
+            const moduleId = `module-${level}-${moduleCounter++}`;
+            
+            const moduleRow = document.createElement('div');
+            moduleRow.className = 'module-row';
+            moduleRow.id = moduleId;
+            moduleRow.innerHTML = `
+                <div class="input-group">
+                    <label>Module Name (optional)</label>
+                    <input type="text" placeholder="e.g., Mathematics" onchange="calculate()">
+                </div>
+                <div class="input-group">
+                    <label>Credits</label>
+                    <input type="number" min="0" max="120" step="15" value="30" onchange="calculate()">
+                </div>
+                <div class="input-group">
+                    <label>Grade</label>
+                    <select onchange="calculate()">
+                        <option value="">Not yet taken</option>
+                        <option value="1">Grade 1 (Distinction)</option>
+                        <option value="2">Grade 2 (Pass 2)</option>
+                        <option value="3">Grade 3 (Pass 3)</option>
+                        <option value="4">Grade 4 (Pass 4)</option>
+                    </select>
+                </div>
+                <button class="remove-btn" onclick="removeModule('${moduleId}')" title="Remove module">×</button>
+            `;
+            
+            container.appendChild(moduleRow);
+            calculate();
+        }
+
+        function removeModule(moduleId) {
+            const module = document.getElementById(moduleId);
+            module.style.animation = 'fadeOut 0.3s ease-out';
+            setTimeout(() => {
+                module.remove();
+                calculate();
+            }, 300);
+        }
+
+        function getModules(level) {
+            const container = document.getElementById(`${level}-modules`);
+            const rows = container.querySelectorAll('.module-row');
+            const modules = [];
+            
+            rows.forEach(row => {
+                const credits = parseInt(row.querySelector('input[type="number"]').value) || 0;
+                const grade = row.querySelector('select').value;
+                
+                if (credits > 0 && grade !== '') {
+                    modules.push({
+                        credits: credits,
+                        grade: parseInt(grade)
+                    });
+                }
+            });
+            
+            return modules;
+        }
+
+        function calculate() {
+            const level2Modules = getModules('level2');
+            const level3Modules = getModules('level3');
+            
+            // Update credit counts
+            const l2Credits = level2Modules.reduce((sum, m) => sum + m.credits, 0);
+            const l3Credits = level3Modules.reduce((sum, m) => sum + m.credits, 0);
+            
+            document.getElementById('l2-credits').textContent = `${l2Credits} / 120 credits`;
+            document.getElementById('l3-credits').textContent = `${l3Credits} / 120 credits`;
+            
+            // Calculate scores
+            const l2Score = level2Modules.reduce((sum, m) => sum + (m.credits * m.grade), 0);
+            const l3Score = level3Modules.reduce((sum, m) => sum + (m.credits * m.grade), 0) * 2;
+            const totalScore = l2Score + l3Score;
+            
+            // Count L3 credits by grade
+            const l3Grade1Credits = level3Modules.filter(m => m.grade === 1).reduce((sum, m) => sum + m.credits, 0);
+            const l3Grade2OrBetterCredits = level3Modules.filter(m => m.grade <= 2).reduce((sum, m) => sum + m.credits, 0);
+            const l3Grade3OrBetterCredits = level3Modules.filter(m => m.grade <= 3).reduce((sum, m) => sum + m.credits, 0);
+            
+            // Determine classification
+            let classification = '';
+            let classificationShort = '';
+            let borderline = false;
+            let borderlineTest = '';
+            
+            if (totalScore <= 630) {
+                classification = 'First-class Honours';
+                classificationShort = '1st';
+            } else if (totalScore <= 690) {
+                borderline = true;
+                if (l3Grade1Credits >= 60) {
+                    classification = 'First-class Honours';
+                    classificationShort = '1st';
+                    borderlineTest = 'Achieved: You have 60+ Level 3 credits at Grade 1';
+                } else {
+                    classification = 'Upper Second-class Honours';
+                    classificationShort = '2:1';
+                    borderlineTest = `Need ${60 - l3Grade1Credits} more Level 3 credits at Grade 1 for First-class`;
+                }
+            } else if (totalScore <= 900) {
+                classification = 'Upper Second-class Honours';
+                classificationShort = '2:1';
+            } else if (totalScore <= 960) {
+                borderline = true;
+                if (l3Grade2OrBetterCredits >= 60) {
+                    classification = 'Upper Second-class Honours';
+                    classificationShort = '2:1';
+                    borderlineTest = 'Achieved: You have 60+ Level 3 credits at Grade 2 or better';
+                } else {
+                    classification = 'Lower Second-class Honours';
+                    classificationShort = '2:2';
+                    borderlineTest = `Need ${60 - l3Grade2OrBetterCredits} more Level 3 credits at Grade 2 or better for Upper Second-class`;
+                }
+            } else if (totalScore <= 1170) {
+                classification = 'Lower Second-class Honours';
+                classificationShort = '2:2';
+            } else if (totalScore <= 1230) {
+                borderline = true;
+                if (l3Grade3OrBetterCredits >= 60) {
+                    classification = 'Lower Second-class Honours';
+                    classificationShort = '2:2';
+                    borderlineTest = 'Achieved: You have 60+ Level 3 credits at Grade 3 or better';
+                } else {
+                    classification = 'Third-class Honours';
+                    classificationShort = '3rd';
+                    borderlineTest = `Need ${60 - l3Grade3OrBetterCredits} more Level 3 credits at Grade 3 or better for Lower Second-class`;
+                }
+            } else if (totalScore <= 1440) {
+                classification = 'Third-class Honours';
+                classificationShort = '3rd';
+            } else {
+                classification = 'Below classification standards';
+                classificationShort = 'N/A';
+            }
+            
+            // Display results
+            displayResults(totalScore, l2Score, l3Score, classification, classificationShort, borderline, borderlineTest, l2Credits, l3Credits, level3Modules);
+        }
+
+        function displayResults(totalScore, l2Score, l3Score, classification, classificationShort, borderline, borderlineTest, l2Credits, l3Credits, level3Modules) {
+            const resultsContent = document.getElementById('results-content');
+            
+            if (totalScore === 0) {
+                resultsContent.innerHTML = '<p style="text-align: center; opacity: 0.8; padding: 2rem;">Add your modules above to calculate your classification</p>';
+                return;
+            }
+            
+            let html = `
+                <div class="score-display">
+                    <div class="score-number">${totalScore}</div>
+                    <div class="score-label">Weighted Grade Credit Score</div>
+                </div>
+                
+                <div style="text-align: center;">
+                    <div class="classification-badge">${classificationShort}</div>
+                    <p style="font-size: 1.5rem; margin-top: 0.5rem;">${classification}</p>
+                </div>
+                
+                <div class="breakdown">
+                    <div class="breakdown-item">
+                        <div class="breakdown-value">${l2Score}</div>
+                        <div class="breakdown-label">Level 2 Score<br>(${l2Credits} credits × grade)</div>
+                    </div>
+                    <div class="breakdown-item">
+                        <div class="breakdown-value">${l3Score / 2}</div>
+                        <div class="breakdown-label">Level 3 Score<br>(${l3Credits} credits × grade)</div>
+                    </div>
+                    <div class="breakdown-item">
+                        <div class="breakdown-value">×2</div>
+                        <div class="breakdown-label">Level 3 Double Weighted</div>
+                    </div>
+                </div>
+            `;
+            
+            if (borderline) {
+                html += `
+                    <div class="borderline-notice">
+                        <h3>⚠️ Borderline Range</h3>
+                        <p>${borderlineTest}</p>
+                    </div>
+                `;
+            }
+            
+            // Add projections
+            if (l2Credits < 120 || l3Credits < 120) {
+                html += generateProjections(totalScore, l2Score, l3Score, l2Credits, l3Credits, level3Modules, classificationShort);
+            }
+            
+            resultsContent.innerHTML = html;
+        }
+
+        function generateProjections(currentScore, l2Score, l3Score, l2Credits, l3Credits, level3Modules) {
+            const remainingL2 = 120 - l2Credits;
+            const remainingL3 = 120 - l3Credits;
+            
+            if (remainingL2 === 0 && remainingL3 === 0) return '';
+            
+            let html = '<div class="projection-section"><h3>🎯 What You Need for Higher Classifications</h3>';
+            
+            // Target scores
+            const targets = [
+                { score: 630, name: 'First-class (1st)', borderline: 690 },
+                { score: 900, name: 'Upper Second (2:1)', borderline: 960 },
+                { score: 1170, name: 'Lower Second (2:2)', borderline: 1230 }
+            ];
+            
+            targets.forEach(target => {
+                if (currentScore > target.score) return; // Already above this classification
+                
+                const scoreNeeded = target.score - currentScore;
+                const l2Needed = remainingL2 > 0 ? Math.min(scoreNeeded, remainingL2 * 1) : 0;
+                const l3Needed = remainingL3 > 0 ? (scoreNeeded - l2Needed) / 2 : 0;
+                
+                if (scoreNeeded <= 0) return;
+                
+                // Calculate average grade needed
+                const totalRemaining = remainingL2 + (remainingL3 * 2);
+                const avgGradeNeeded = scoreNeeded / totalRemaining;
+                
+                let gradeDesc = '';
+                if (avgGradeNeeded <= 1) gradeDesc = 'all Grade 1 (Distinction)';
+                else if (avgGradeNeeded <= 2) gradeDesc = 'mostly Grade 1-2';
+                else if (avgGradeNeeded <= 3) gradeDesc = 'mostly Grade 2-3';
+                else gradeDesc = 'Grade 3-4';
+                
+                html += `
+                    <div class="projection-item">
+                        <div class="projection-target">${target.name}</div>
+                        <div class="projection-requirement">
+                            Need ${scoreNeeded} more points${remainingL2 > 0 && remainingL3 > 0 ? ` across ${remainingL2} L2 and ${remainingL3} L3 credits` : remainingL2 > 0 ? ` from ${remainingL2} L2 credits` : ` from ${remainingL3} L3 credits`} — average ${gradeDesc}
+                        </div>
+                    </div>
+                `;
+            });
+            
+            if (remainingL3 > 0) {
+                html += '<p style="margin-top: 1rem; font-size: 0.95rem; opacity: 0.9;"><span class="warning-text">Note:</span> Borderline ranges may require 60+ Level 3 credits at specific grades regardless of total score.</p>';
+            }
+            
+            html += '</div>';
+            return html;
+        }
+
+        // Add some default modules to demonstrate
+        window.addEventListener('load', () => {
+            addModule('level2');
+            addModule('level2');
+            addModule('level3');
+            addModule('level3');
+        });
+    </script>
+</body>
+</html>
